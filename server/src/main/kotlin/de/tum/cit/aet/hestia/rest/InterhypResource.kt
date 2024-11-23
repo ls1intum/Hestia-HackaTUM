@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
+import jakarta.ws.rs.QueryParam
 import jakarta.ws.rs.core.MediaType
 import org.eclipse.microprofile.rest.client.inject.RestClient
 
@@ -23,9 +24,9 @@ class InterhypResource {
     @Path("/price-index/buy")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "zip-code-prices-buy")
-    fun priceIndexBuy(): ZipCodePrizesResponse {
+    fun priceIndexBuy(@QueryParam("estateType") estateType: String): ZipCodePrizesResponse {
         return interhypClient.getData(
-            estates = "houses", minZipCode = "01001", maxZipCode = "99998"
+            estates = estateType, minZipCode = "01001", maxZipCode = "99998"
         )
     }
 
@@ -33,9 +34,9 @@ class InterhypResource {
     @Path("/price-index/rent")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "zip-code-prices-rent")
-    fun priceIndexRent(): ZipCodePrizesResponse {
+    fun priceIndexRent(@QueryParam("estateType") estateType: String): ZipCodePrizesResponse {
         val data = interhypClient.getData(
-            estates = "houses", minZipCode = "01001", maxZipCode = "99998"
+            estates = estateType, minZipCode = "01001", maxZipCode = "99998"
         )
         data.values = data.values.map { it.copy(prizePerSqm = it.prizePerSqm / 100) }
         return data
