@@ -33,7 +33,7 @@ dependencies {
 }
 
 group = "de.tum.cit.aet.hestia"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
