@@ -10,14 +10,6 @@ services:
     image: caddy:2.9-alpine
     volumes:
       - ./proxy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - type: bind
-        source: "/var/lib/rbg-cert/live/host:intum:vmbhatotia106.privkey.pem"
-        target: /key.pem
-        read_only: true
-      - type: bind
-        source: "/var/lib/rbg-cert/live/host:intum:vmbhatotia106.fullchain.pem"
-        target: /cert.pem
-        read_only: true
     ports:
       - "80:80"
       - "443:443"
