@@ -1,17 +1,13 @@
-import {
-    GeoJSON,
-    MapContainer,
-    TileLayer,
-    useMapEvents,
-} from "react-leaflet";
-import React, { useCallback, useRef, useState, useEffect } from "react";
-import { Feature, FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
-import { PathOptions, Map as LeafletMap, Layer } from "leaflet";
+import {GeoJSON, MapContainer, TileLayer, useMapEvents,} from "react-leaflet";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Feature, FeatureCollection, GeoJsonProperties, Geometry} from "geojson";
+import {Layer, Map as LeafletMap, PathOptions} from "leaflet";
 import {PropertyData, PropertySidebar} from "./PropertySidebar";
-import { cn } from "@/lib/utils";
-import { generateMockData } from "@/mock/HousingDataGenerator";
-import { useZipCodes } from "@/models/api/useAreaCodesAPI";
-import { debounce } from "lodash";
+import {cn} from "@/lib/utils";
+import {generateMockData} from "@/mock/HousingDataGenerator";
+import {useZipCodes} from "@/models/api/useAreaCodesAPI";
+import {debounce} from "lodash";
+import {getSettings} from "@/components/Settings.tsx";
 
 interface ZipCodeFeature extends Feature {
     properties: {
@@ -76,6 +72,67 @@ export function HeatMap() {
 
     const { data: newZipCodes } = useZipCodes(bounds);
 
+    const [zipCodeColors, setZipCodeColors] = useState<Record<string, string>>({});
+
+    const fetchZipCodeScores = async (zipCodes: string[]) => {
+        try {
+            const response = await fetch(`/api/score`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    address: getSettings().workAddress,
+                    travelMode: 'DRIVE',
+                    zips: zipCodes,
+                    weights: getSettings().weights,
+                }),
+            });
+            const data = await response.json();
+
+            const newColors: Record<string, string> = {};
+            zipCodes.forEach((zip) => {
+                const value = Number(data[zip]) || 0;
+                const clampedValue = Math.min(100, Math.max(0, value));
+
+                const red = Math.round(255 * (1 - clampedValue / 100));
+                const green = Math.round(255 * (clampedValue / 100));
+                const blue = 0;
+
+                const toHex = (num: number) => num.toString(16).padStart(2, '0');
+                newColors[zip] = `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
+            });
+
+            setZipCodeColors((prev) => ({ ...prev, ...newColors }));
+        } catch (error) {
+            console.error('Error fetching ZIP code scores:', error);
+        }
+    };
+
+    useEffect(() => {
+        const zipCodes = allZipCodes?.features.map(
+          (feature) => (feature as ZipCodeFeature).properties.plz
+        );
+        if (zipCodes?.length) {
+            fetchZipCodeScores(zipCodes);
+        }
+    }, [allZipCodes]);
+
+    const zipCodeStyle = (feature: Feature<Geometry, GeoJsonProperties>): PathOptions => {
+        const zipFeature = feature as ZipCodeFeature;
+        const plz = zipFeature.properties.plz;
+        const isSelected = plz === selectedPlz;
+
+        return {
+            fillColor: zipCodeColors[plz] || '#ccc',
+            weight: isSelected ? 3 : 1,
+            opacity: 1,
+            color: isSelected ? '#000' : '#666',
+            dashArray: isSelected ? '' : '3',
+            fillOpacity: isSelected ? 0.7 : 0.3,
+        };
+    };
+
     useEffect(() => {
         if (newZipCodes) {
             setAllZipCodes((prevZipCodes) => {
@@ -102,29 +159,6 @@ export function HeatMap() {
             });
         }
     }, [newZipCodes]);
-
-    const getColor = (plz: string): string => {
-        const value = parseInt(plz.slice(-2), 10);
-        if (value < 20) return "#fee5d9";
-        if (value < 40) return "#fcae91";
-        if (value < 60) return "#fb6a4a";
-        if (value < 80) return "#de2d26";
-        return "#a50f15";
-    };
-
-    const zipCodeStyle = (feature: Feature<Geometry, GeoJsonProperties>): PathOptions => {
-        const zipFeature = feature as ZipCodeFeature;
-        const isSelected = zipFeature.properties.plz === selectedPlz;
-
-        return {
-            fillColor: getColor(zipFeature.properties.plz),
-            weight: isSelected ? 3 : 1,
-            opacity: 1,
-            color: isSelected ? "#000" : "#666",
-            dashArray: isSelected ? "" : "3",
-            fillOpacity: isSelected ? 0.7 : 0.3,
-        };
-    };
 
     const onEachZipCode = (feature: Feature<Geometry, GeoJsonProperties>, layer: Layer): void => {
         const zipFeature = feature as ZipCodeFeature;

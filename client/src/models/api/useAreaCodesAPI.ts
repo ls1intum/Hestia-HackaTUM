@@ -1,6 +1,5 @@
-import {useQuery, useQueryClient} from '@tanstack/react-query'
-import {FeatureCollection} from 'geojson'
-import {fetchZipCodesData} from "@/utils/fetchZipData.ts";
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { FeatureCollection } from 'geojson'
 
 interface BoundingBox {
   minLat: number
@@ -12,13 +11,24 @@ interface BoundingBox {
 const QUERY_KEY = ['zipCodes'] as const
 
 async function fetchZipCodes(bounds: BoundingBox): Promise<FeatureCollection> {
-  new URLSearchParams({
+  const params = new URLSearchParams({
     min_lat: bounds.minLat.toString(),
     min_lon: bounds.minLon.toString(),
     max_lat: bounds.maxLat.toString(),
     max_lon: bounds.maxLon.toString(),
-  });
-  return await fetchZipCodesData()
+  })
+
+  const response = await fetch(
+    `/api/geo?${params.toString()}`, {
+      method: 'POST',
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch ZIP codes')
+  }
+
+  return response.json()
 }
 
 export function useZipCodes(bounds: BoundingBox) {
