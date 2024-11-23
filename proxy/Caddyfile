@@ -1,8 +1,4 @@
-http://hestia.aet.cit.tum.de {
-    redir https://{host}{uri}
-}
-
-https://hestia.aet.cit.tum.de {
+hestia.aet.cit.tum.de {
     handle /api/* {
         reverse_proxy server:8080
     }
