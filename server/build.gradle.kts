@@ -25,6 +25,7 @@ dependencies {
     implementation("io.quarkus:quarkus-rest-client-jackson")
     implementation("io.quarkus:quarkus-jackson")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.jsoizo:kotlin-csv-jvm:1.10.0")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
 }

@@ -1,4 +1,4 @@
-package de.tum.cit.aet.hestia
+package de.tum.cit.aet.hestia.rest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.tum.cit.aet.hestia.dto.airQuality.AirQualityRequest

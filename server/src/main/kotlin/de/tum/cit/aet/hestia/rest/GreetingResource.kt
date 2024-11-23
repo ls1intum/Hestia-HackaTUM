@@ -1,4 +1,4 @@
-package de.tum.cit.aet.hestia
+package de.tum.cit.aet.hestia.rest
 
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
