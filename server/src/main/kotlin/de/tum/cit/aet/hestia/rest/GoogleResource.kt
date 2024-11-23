@@ -24,21 +24,21 @@ class GoogleResource {
 
     @Inject
     @ConfigProperty(name = "hestia.google.api.key")
-    lateinit var apiKey: String
+    private lateinit var apiKey: String
 
     @Inject
     @RestClient
-    lateinit var airQualityClient: GoogleAirQualityClient
+    private lateinit var airQualityClient: GoogleAirQualityClient
 
     @Inject
     @RestClient
-    lateinit var placesClient: GooglePlacesClient
+    private lateinit var placesClient: GooglePlacesClient
 
     @Inject
-    lateinit var naviMatrixService: NaviMatrixService
+    private lateinit var naviMatrixService: NaviMatrixService
 
     @Inject
-    lateinit var objectMapper: ObjectMapper
+    private lateinit var objectMapper: ObjectMapper
 
     @GET
     @Path("/air-quality")

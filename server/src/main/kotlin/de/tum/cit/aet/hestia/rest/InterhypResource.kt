@@ -17,7 +17,7 @@ class InterhypResource {
 
     @Inject
     @RestClient
-    lateinit var interhypClient: InterhypClient
+    private lateinit var interhypClient: InterhypClient
 
     @GET
     @Path("/price-index/buy")

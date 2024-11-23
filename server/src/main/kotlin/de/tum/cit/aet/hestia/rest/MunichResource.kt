@@ -18,7 +18,7 @@ class MunichResource {
 
     @Inject
     @RestClient
-    lateinit var munichClient: MunichClient
+    private lateinit var munichClient: MunichClient
 
     @GET
     @Path("/kita")

@@ -14,14 +14,14 @@ class NaviMatrixService {
 
     @Inject
     @ConfigProperty(name = "hestia.google.api.key")
-    lateinit var apiKey: String
+    private lateinit var apiKey: String
 
     @Inject
     @RestClient
-    lateinit var routesClient: GoogleRoutesClient
+    private lateinit var routesClient: GoogleRoutesClient
 
     @Inject
-    lateinit var objectMapper: ObjectMapper
+    private lateinit var objectMapper: ObjectMapper
 
 
     fun getDistanceMatrix(origin: Location, locations: List<String>, mode: RouteTravelMode): Map<String, Long> {
