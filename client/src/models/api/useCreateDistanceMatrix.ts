@@ -7,7 +7,7 @@ export enum TravelMode {
   BICYCLE = 'BICYCLE',
   WALK = 'WALK',
   TWO_WHEELER = 'TWO_WHEELER',
-  TRANSIT = 'TRANSIT'
+  TRANSIT = 'TRANSIT',
 }
 
 interface Location {
@@ -40,9 +40,9 @@ async function fetchDistanceMatrix(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
-    body: JSON.stringify(request)
+    body: JSON.stringify(request),
   })
 
   if (!response.ok) {
@@ -88,7 +88,11 @@ export function useDistanceCalculator() {
   const queryClient = useQueryClient()
 
   // Proper query key generator
-  const getCacheKey = (origin: Location, placeId: string, mode: TravelMode): CacheKey => ({
+  const getCacheKey = (
+    origin: Location,
+    placeId: string,
+    mode: TravelMode
+  ): CacheKey => ({
     type: 'distance',
     origin,
     placeId,
@@ -96,7 +100,11 @@ export function useDistanceCalculator() {
   })
 
   // Function to get cached value
-  const getCachedDuration = (origin: Location, placeId: string, mode: TravelMode) => {
+  const getCachedDuration = (
+    origin: Location,
+    placeId: string,
+    mode: TravelMode
+  ) => {
     const queryKey = [QUERY_KEY, getCacheKey(origin, placeId, mode)] as const
     return queryClient.getQueryData<number>(queryKey)
   }
@@ -141,10 +149,7 @@ export function useDistanceCalculator() {
 
       // Return all durations (both cached and new)
       return Object.fromEntries(
-        placeIds.map(id => [
-          id,
-          getCachedDuration(origin, id, mode) as number
-        ])
+        placeIds.map(id => [id, getCachedDuration(origin, id, mode) as number])
       )
     },
 
@@ -160,12 +165,17 @@ export function useDistanceCalculator() {
 
       if (uncachedPlaceIds.length > 0) {
         return queryClient.prefetchQuery({
-          queryKey: [QUERY_KEY, 'prefetch', { origin, placeIds: uncachedPlaceIds, mode }],
-          queryFn: () => fetchDistanceMatrix({
-            origin,
-            placeIds: uncachedPlaceIds,
-            travelMode: mode,
-          })
+          queryKey: [
+            QUERY_KEY,
+            'prefetch',
+            { origin, placeIds: uncachedPlaceIds, mode },
+          ],
+          queryFn: () =>
+            fetchDistanceMatrix({
+              origin,
+              placeIds: uncachedPlaceIds,
+              travelMode: mode,
+            }),
         })
       }
     },
@@ -173,7 +183,10 @@ export function useDistanceCalculator() {
     // Add a method to clear cache for specific entries
     clearCache: (origin: Location, placeIds: string[], mode: TravelMode) => {
       placeIds.forEach(placeId => {
-        const queryKey = [QUERY_KEY, getCacheKey(origin, placeId, mode)] as const
+        const queryKey = [
+          QUERY_KEY,
+          getCacheKey(origin, placeId, mode),
+        ] as const
         queryClient.removeQueries({ queryKey })
       })
     },
@@ -183,9 +196,9 @@ export function useDistanceCalculator() {
       const queryKey = [QUERY_KEY, getCacheKey(origin, placeId, mode)] as const
       return {
         duration: queryClient.getQueryData<number>(queryKey),
-        isLoading: queryClient.isFetching({ queryKey })
+        isLoading: queryClient.isFetching({ queryKey }),
       }
-    }
+    },
   }
 }
 
@@ -194,5 +207,5 @@ export type {
   Location,
   DistanceMatrixRequest,
   DistanceMatrixResponse,
-  CacheKey
+  CacheKey,
 }

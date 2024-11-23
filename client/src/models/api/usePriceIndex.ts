@@ -26,7 +26,9 @@ interface PriceIndexParams {
 
 const QUERY_KEY = ['priceIndex'] as const
 
-async function fetchPriceIndex(params?: PriceIndexParams): Promise<PriceIndexResponse> {
+async function fetchPriceIndex(
+  params?: PriceIndexParams
+): Promise<PriceIndexResponse> {
   const queryParams = new URLSearchParams()
 
   if (params?.estateType) {
@@ -39,7 +41,7 @@ async function fetchPriceIndex(params?: PriceIndexParams): Promise<PriceIndexRes
 
   const response = await fetch(url, {
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
   })
 
@@ -51,7 +53,6 @@ async function fetchPriceIndex(params?: PriceIndexParams): Promise<PriceIndexRes
 }
 
 export function usePriceIndex(params?: PriceIndexParams) {
-
   return useQuery({
     queryKey: [...QUERY_KEY, params],
     queryFn: () => fetchPriceIndex(params),
@@ -63,7 +64,10 @@ export function usePriceIndex(params?: PriceIndexParams) {
 }
 
 // Utility function to get price for a specific ZIP code
-export function getPriceForZipCode(data: PriceIndexResponse | undefined, zipCode: string): number | undefined {
+export function getPriceForZipCode(
+  data: PriceIndexResponse | undefined,
+  zipCode: string
+): number | undefined {
   return data?.values.find(value => value.zipCode === zipCode)?.prizePerSqm
 }
 

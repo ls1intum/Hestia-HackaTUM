@@ -18,11 +18,9 @@ async function fetchZipCodes(bounds: BoundingBox): Promise<FeatureCollection> {
     max_lon: bounds.maxLon.toString(),
   })
 
-  const response = await fetch(
-    `/api/geo?${params.toString()}`, {
-      method: 'POST',
-    }
-  )
+  const response = await fetch(`/api/geo?${params.toString()}`, {
+    method: 'POST',
+  })
 
   if (!response.ok) {
     throw new Error('Failed to fetch ZIP codes')
@@ -32,7 +30,6 @@ async function fetchZipCodes(bounds: BoundingBox): Promise<FeatureCollection> {
 }
 
 export function useZipCodes(bounds: BoundingBox) {
-
   return useQuery({
     queryKey: [...QUERY_KEY, bounds],
     queryFn: () => fetchZipCodes(bounds),

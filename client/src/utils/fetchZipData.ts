@@ -8,7 +8,7 @@ export async function fetchZipCodesData() {
     // Filter features to only include ZIP codes starting with 80
     return {
       type: 'FeatureCollection',
-      features: data.features
+      features: data.features,
     } as FeatureCollection
   } catch (error) {
     console.error('Error loading ZIP codes:', error)
