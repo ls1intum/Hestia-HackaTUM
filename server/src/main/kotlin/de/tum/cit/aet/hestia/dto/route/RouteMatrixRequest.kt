@@ -6,7 +6,7 @@ data class RouteMatrixRequest(
     val origins: List<RouteMatrixOrigin>,
     val destinations: List<RouteMatrixDestination>,
     val travelMode: RouteTravelMode,
-    val routingPreference: RoutingPreference,
+    val routingPreference: RoutingPreference?,
     val departureTime: String?,
     val arrivalTime: String?,
     val languageCode: String?,

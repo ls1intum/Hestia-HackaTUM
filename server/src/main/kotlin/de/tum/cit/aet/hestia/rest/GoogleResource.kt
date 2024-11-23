@@ -5,7 +5,6 @@ import de.tum.cit.aet.hestia.dto.Location
 import de.tum.cit.aet.hestia.dto.airQuality.AirQualityRequest
 import de.tum.cit.aet.hestia.dto.airQuality.AirQualityResponse
 import de.tum.cit.aet.hestia.dto.route.DistanceMatrixDTO
-import de.tum.cit.aet.hestia.dto.route.RouteTravelMode
 import de.tum.cit.aet.hestia.external.GoogleAirQualityClient
 import de.tum.cit.aet.hestia.external.GooglePlacesClient
 import de.tum.cit.aet.hestia.service.NaviMatrixService
@@ -75,7 +74,7 @@ class GoogleResource {
     fun getDistanceMatrix(data: String): Map<String, Long> {
         val dto = objectMapper.readValue(data, DistanceMatrixDTO::class.java)
         return naviMatrixService.getDistanceMatrix(
-            origin = dto.origin, locations = dto.locations, mode = RouteTravelMode.DRIVE
+            origin = dto.origin, locations = dto.locations, mode = dto.travelMode
         )
     }
 }
