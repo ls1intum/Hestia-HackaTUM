@@ -23,9 +23,11 @@ dependencies {
     implementation("org.eclipse.microprofile.rest.client:microprofile-rest-client-api")
     implementation("io.quarkus:quarkus-cache")
     implementation("io.quarkus:quarkus-rest-client-jackson")
+    implementation("io.quarkus:quarkus-rest-jackson")
     implementation("io.quarkus:quarkus-jackson")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.jsoizo:kotlin-csv-jvm:1.10.0")
+    implementation("io.quarkus:quarkus-smallrye-openapi")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
 }

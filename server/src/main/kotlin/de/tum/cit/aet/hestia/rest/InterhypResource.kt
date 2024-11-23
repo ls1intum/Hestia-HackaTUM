@@ -1,6 +1,6 @@
 package de.tum.cit.aet.hestia.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import de.tum.cit.aet.hestia.dto.ZipCodePrizesResponse
 import de.tum.cit.aet.hestia.external.InterhypClient
 import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
@@ -23,13 +23,9 @@ class InterhypResource {
     @Path("/price-index/buy")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "zip-code-prices-buy")
-    fun priceIndexBuy(): String {
-        return ObjectMapper().writeValueAsString(
-            interhypClient.getData(
-            estates = "houses",
-            minZipCode = "01001",
-            maxZipCode = "99998"
-            )
+    fun priceIndexBuy(): ZipCodePrizesResponse {
+        return interhypClient.getData(
+            estates = "houses", minZipCode = "01001", maxZipCode = "99998"
         )
     }
 
@@ -37,13 +33,11 @@ class InterhypResource {
     @Path("/price-index/rent")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "zip-code-prices-rent")
-    fun priceIndexRent(): String {
+    fun priceIndexRent(): ZipCodePrizesResponse {
         val data = interhypClient.getData(
-            estates = "houses",
-            minZipCode = "01001",
-            maxZipCode = "99998"
+            estates = "houses", minZipCode = "01001", maxZipCode = "99998"
         )
         data.values = data.values.map { it.copy(prizePerSqm = it.prizePerSqm / 100) }
-        return ObjectMapper().writeValueAsString(data)
+        return data
     }
 }

@@ -1,6 +1,6 @@
 package de.tum.cit.aet.hestia.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import de.tum.cit.aet.hestia.dto.munich.POI
 import de.tum.cit.aet.hestia.dto.parseCsv
 import de.tum.cit.aet.hestia.external.MunichClient
 import io.quarkus.cache.CacheResult
@@ -24,11 +24,8 @@ class MunichResource {
     @Path("/kita")
     @Produces(MediaType.APPLICATION_JSON)
     @CacheResult(cacheName = "kita")
-    fun priceIndexBuy(): String {
+    fun priceIndexBuy(): List<POI> {
         val kitas = parseCsv(munichClient.getKitas())
-        val pois = kitas.map { it.toPoi() }
-        return ObjectMapper().writeValueAsString(
-            pois
-        )
+        return kitas.map { it.toPoi() }
     }
 }

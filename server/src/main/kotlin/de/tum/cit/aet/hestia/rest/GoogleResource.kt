@@ -3,6 +3,7 @@ package de.tum.cit.aet.hestia.rest
 import com.fasterxml.jackson.databind.ObjectMapper
 import de.tum.cit.aet.hestia.dto.Location
 import de.tum.cit.aet.hestia.dto.airQuality.AirQualityRequest
+import de.tum.cit.aet.hestia.dto.airQuality.AirQualityResponse
 import de.tum.cit.aet.hestia.dto.route.DistanceMatrixDTO
 import de.tum.cit.aet.hestia.dto.route.RouteTravelMode
 import de.tum.cit.aet.hestia.external.GoogleAirQualityClient
@@ -43,13 +44,10 @@ class GoogleResource {
     @GET
     @Path("/air-quality")
     @CacheResult(cacheName = "air-quality")
-    fun priceIndexBuy(location: Location): String {
-        return ObjectMapper().writeValueAsString(
-            airQualityClient.getCurrentConditions(
-                apiKey = apiKey,
-                payload = AirQualityRequest(
-                    location = location
-                )
+    fun priceIndexBuy(location: Location): AirQualityResponse {
+        return airQualityClient.getCurrentConditions(
+            apiKey = apiKey, payload = AirQualityRequest(
+                location = location
             )
         )
     }
@@ -57,25 +55,27 @@ class GoogleResource {
     @GET
     @Path("/place/{placeId}")
     @CacheResult(cacheName = "place-details")
-    fun getPlaceDetails(@PathParam("placeId") placeId: String): String {
-        return placesClient.getPlaceDetails(
+    fun getPlaceDetails(@PathParam("placeId") placeId: String): Location {
+        val jsonString = placesClient.getPlaceDetails(
             apiKey = apiKey,
             fields = "location",
             placeId = placeId,
         )
+        val rootNode = objectMapper.readTree(jsonString)
+
+        val locationNode = rootNode.get("location")
+        val location = objectMapper.treeToValue(locationNode, Location::class.java)
+
+        return location
     }
 
     @POST
     @Path("/distance-matrix")
     @CacheResult(cacheName = "distance-matrix")
-    fun getDistanceMatrix(data: String): String {
+    fun getDistanceMatrix(data: String): Map<String, Long> {
         val dto = objectMapper.readValue(data, DistanceMatrixDTO::class.java)
-        return objectMapper.writeValueAsString(
-            naviMatrixService.getDistanceMatrix(
-                origin = dto.origin,
-                locations = dto.locations,
-                mode = RouteTravelMode.DRIVE
-            )
+        return naviMatrixService.getDistanceMatrix(
+            origin = dto.origin, locations = dto.locations, mode = RouteTravelMode.DRIVE
         )
     }
 }
