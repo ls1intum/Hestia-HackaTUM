@@ -28,6 +28,7 @@ class GeoService {
         return geo
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun calculate(geo: GeoJSON, startLocation: Location, endLocation: Location): List<Any> {
         val filteredData: List<Any>
         println(
