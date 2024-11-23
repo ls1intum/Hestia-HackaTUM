@@ -44,10 +44,10 @@ class GoogleResource {
     @GET
     @Path("/air-quality")
     @CacheResult(cacheName = "air-quality")
-    fun priceIndexBuy(location: Location): AirQualityResponse {
+    fun getAirQuality(@QueryParam("latitude") latitude: Double, @QueryParam("longitude") longitude: Double): AirQualityResponse {
         return airQualityClient.getCurrentConditions(
             apiKey = apiKey, payload = AirQualityRequest(
-                location = location
+                location = Location(latitude = latitude, longitude = longitude)
             )
         )
     }
