@@ -2,7 +2,7 @@ import { Feature, FeatureCollection } from 'geojson'
 
 export async function fetchZipCodes() {
   try {
-    const response = await fetch('../../resources/plz-5stellig.geojson')
+    const response = await fetch('../../resources/test2.geojson')
     const data: FeatureCollection = await response.json()
 
     // Filter features to only include ZIP codes starting with 80
@@ -11,7 +11,7 @@ export async function fetchZipCodes() {
       features: data.features.filter((feature: Feature) => {
         const plz = feature.properties?.plz || ''
         return (
-          plz.startsWith('80') || plz.startsWith('81') || plz.startsWith('85')
+          true
         )
       }),
     } as FeatureCollection

@@ -1,9 +1,9 @@
-import { Map } from './components/Map'
+import { HeatMap } from './components/HeatMap.tsx'
 
 function App() {
   return (
     <main className='container flex-1'>
-      <Map />
+      <HeatMap />
     </main>
   )
 }
