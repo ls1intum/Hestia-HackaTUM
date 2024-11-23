@@ -13,6 +13,7 @@ import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import org.eclipse.microprofile.config.inject.ConfigProperty
+import org.eclipse.microprofile.rest.client.inject.RestClient
 
 @Path("/score")
 @ApplicationScoped
@@ -23,6 +24,7 @@ class ScoreResource {
     private lateinit var apiKey: String
 
     @Inject
+    @RestClient
     private lateinit var googlePlacesClient: GooglePlacesClient
 
     @Inject
