@@ -52,8 +52,9 @@ class ScoreService {
             )
         }
 
-        val distanceMatrix =
-            googleService.getDistanceMatrix(DistanceMatrixDTO(location, zipDatas.map { it.placeId }, travelMode))
+        val distanceMatrix = zipDatas.chunked(50).parallelStream().map { chunk ->
+            googleService.getDistanceMatrix(DistanceMatrixDTO(location, chunk.map { it.placeId }, travelMode))
+        }.reduce { acc, map -> acc + map }.get()
 
         val scoreMap = zipDatas.map { zipData ->
             val distance = distanceMatrix[zipData.placeId]
