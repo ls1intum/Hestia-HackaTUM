@@ -4,6 +4,6 @@ localhost, hestia.aet.cit.tum.de {
     }
 
     handle {
-        respond "tbd"
+        reverse_proxy client:3000
     }
 }
