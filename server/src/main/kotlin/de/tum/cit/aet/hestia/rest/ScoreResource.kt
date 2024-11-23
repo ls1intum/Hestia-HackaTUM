@@ -20,7 +20,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient
 class ScoreResource {
 
     @Inject
-    @ConfigProperty(name = "google.api.key")
+    @ConfigProperty(name = "hestia.google.api.key")
     private lateinit var apiKey: String
 
     @Inject
