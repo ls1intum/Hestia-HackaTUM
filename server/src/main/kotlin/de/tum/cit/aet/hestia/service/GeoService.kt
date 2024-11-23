@@ -29,14 +29,11 @@ class GeoService {
     }
 
     fun calculate(geo: GeoJSON, startLocation: Location, endLocation: Location): List<Any> {
-        // val startLocation = Location(48.240654, 11.30886224)
-        // val endLocation = Location(48.0525620560951, 11.700356223229269)
-
-        val plzs: List<Any>
+        val filteredData: List<Any>
         println(
             "Time: ${
                 measureTimeMillis {
-                    plzs = geo.features.filter { feature ->
+                    filteredData = geo.features.filter { feature ->
                         var c1 = feature.geometry.coordinates as ArrayList<Any>
                         while ((c1[0] as? ArrayList<*>)?.get(0) is ArrayList<*>) {
                             c1 = c1[0] as ArrayList<Any>
@@ -52,8 +49,8 @@ class GeoService {
                 }
             } ms"
         )
-        println("PLZs: ${plzs.size}")
+        println("PLZs: ${filteredData.size}")
 
-        return plzs
+        return filteredData
     }
 }
