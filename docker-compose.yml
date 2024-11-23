@@ -8,11 +8,6 @@ services:
     env_file:
       - server/.env
 
-  zipquery:
-    image: tumls1itg/hackatum-25-hestia-zipquery
-    hostname: zipquery
-    restart: unless-stopped
-
   client:
     build:
       dockerfile: ./Dockerfile
@@ -29,6 +24,5 @@ services:
       - "443:443"
     depends_on:
       - server
-      - zipquery
       - client
     restart: unless-stopped

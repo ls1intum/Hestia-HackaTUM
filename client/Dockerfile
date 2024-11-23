@@ -5,7 +5,7 @@ FROM node:23-alpine AS build
 WORKDIR /app
 COPY . ./
 
-RUN npm ci
+RUN npm i
 RUN npm run build
 
 FROM busybox:1.37.0

@@ -39,7 +39,7 @@ interface SettingsProps {
 
 const COOKIE_KEY = "user_settings";
 
-const getInitialSettings = (): SettingsData => {
+export const getSettings = (): SettingsData => {
   const storedSettings = Cookies.get(COOKIE_KEY);
   if (storedSettings) {
     return JSON.parse(storedSettings) as SettingsData;
@@ -57,7 +57,7 @@ const getInitialSettings = (): SettingsData => {
 };
 
 function Settings({setIsSettingsOpen}: SettingsProps) {
-  const [settings, setSettings] = useState<SettingsData>(getInitialSettings());
+  const [settings, setSettings] = useState<SettingsData>(getSettings());
   useEffect(() => {
     Cookies.set(COOKIE_KEY, JSON.stringify(settings), {expires: 14});
   }, [settings]);
