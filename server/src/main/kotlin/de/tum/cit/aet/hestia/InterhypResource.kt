@@ -1,5 +1,6 @@
 package de.tum.cit.aet.hestia
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import de.tum.cit.aet.hestia.external.InterhypClient
 import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
@@ -19,14 +20,30 @@ class InterhypResource {
     lateinit var interhypClient: InterhypClient
 
     @GET
-    @Path("/price-index")
+    @Path("/price-index/buy")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "zip-code-prices")
-    fun priceIndex(): String {
-        return interhypClient.getData(
+    @CacheResult(cacheName = "zip-code-prices-buy")
+    fun priceIndexBuy(): String {
+        return ObjectMapper().writeValueAsString(
+            interhypClient.getData(
+            estates = "houses",
+            minZipCode = "01001",
+            maxZipCode = "99998"
+            )
+        )
+    }
+
+    @GET
+    @Path("/price-index/rent")
+    @Produces(MediaType.APPLICATION_JSON)
+    @CacheResult(cacheName = "zip-code-prices-rent")
+    fun priceIndexRent(): String {
+        val data = interhypClient.getData(
             estates = "houses",
             minZipCode = "01001",
             maxZipCode = "99998"
         )
+        data.values = data.values.map { it.copy(prizePerSqm = it.prizePerSqm / 100) }
+        return ObjectMapper().writeValueAsString(data)
     }
 }
