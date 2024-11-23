@@ -1,4 +1,4 @@
-hestia.aet.cit.tum.de {
+localhost, hestia.aet.cit.tum.de {
     handle /api/* {
         reverse_proxy server:8080
     }

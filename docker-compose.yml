@@ -1,7 +1,7 @@
 services:
   server:
     build:
-      dockerfile: ./src/main/docker/Dockerfile.native
+      dockerfile: ./src/main/docker/Dockerfile.jvm
       context: ./server
     hostname: server
     restart: unless-stopped
