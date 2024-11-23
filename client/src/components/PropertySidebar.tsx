@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { X, Train, Home, Baby } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
-interface PropertyData {
+export interface PropertyData {
   plz: string;
   name: string;
   rentPrices: {

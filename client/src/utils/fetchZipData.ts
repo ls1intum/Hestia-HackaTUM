@@ -1,19 +1,14 @@
-import { Feature, FeatureCollection } from 'geojson'
+import { FeatureCollection } from 'geojson'
 
-export async function fetchZipCodes() {
+export async function fetchZipCodesData() {
   try {
-    const response = await fetch('../../resources/test2.geojson')
+    const response = await fetch('/test.geojson')
     const data: FeatureCollection = await response.json()
 
     // Filter features to only include ZIP codes starting with 80
     return {
       type: 'FeatureCollection',
-      features: data.features.filter((feature: Feature) => {
-        const plz = feature.properties?.plz || ''
-        return (
-          true
-        )
-      }),
+      features: data.features
     } as FeatureCollection
   } catch (error) {
     console.error('Error loading ZIP codes:', error)

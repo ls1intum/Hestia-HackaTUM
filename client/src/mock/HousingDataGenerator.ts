@@ -1,6 +1,8 @@
 
 // Mock data generator remains the same
-export const generateMockData = (plz: string, name: string) => ({
+import {PropertyData} from "@/components/PropertySidebar.tsx";
+
+export const generateMockData = (plz: string, name: string): PropertyData => ({
     plz,
     name,
     rentPrices: {
