@@ -8,11 +8,6 @@ services:
     env_file:
       - server/.env
 
-  zipquery:
-    image: tumls1itg/hackatum-25-hestia-zipquery
-    hostname: zipquery
-    restart: unless-stopped
-
   client:
     build:
       dockerfile: ./Dockerfile
