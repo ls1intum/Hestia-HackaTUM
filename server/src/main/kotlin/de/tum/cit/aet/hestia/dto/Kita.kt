@@ -3,7 +3,7 @@ package de.tum.cit.aet.hestia.dto
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import de.tum.cit.aet.hestia.dto.munich.POI
 
-data class Institution(
+data class Kita(
     val sponsorship: String,
     val institutionName: String,
     val institutionType: String,
@@ -24,9 +24,9 @@ data class Institution(
     )
 }
 
-fun parseCsv(content: String): List<Institution> {
+fun parseKitaCsv(content: String): List<Kita> {
     return csvReader().readAllWithHeader(data = content).map { row ->
-        Institution(
+        Kita(
             sponsorship = row["Trägerschaft"] ?: "",
             institutionName = row["Name Einrichtung"] ?: "",
             institutionType = row["Einrichtungsart"] ?: "",
