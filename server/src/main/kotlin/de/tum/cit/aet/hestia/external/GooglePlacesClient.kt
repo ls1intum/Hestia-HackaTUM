@@ -1,5 +1,7 @@
 package de.tum.cit.aet.hestia.external
 
+import de.tum.cit.aet.hestia.dto.place.TextSearchRequest
+import de.tum.cit.aet.hestia.dto.place.TextSearchResponse
 import jakarta.ws.rs.*
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient
 
@@ -14,4 +16,12 @@ interface GooglePlacesClient {
         @QueryParam("fields") fields: String,
         @PathParam("placeId") placeId: String
     ): String
+
+    @POST
+    @Path("/v1/places:searchText")
+    fun searchByText(
+        @HeaderParam("X-Goog-Api-Key") apiKey: String,
+        @HeaderParam("X-Goog-FieldMask") fields: String,
+        payload: TextSearchRequest
+    ): TextSearchResponse
 }

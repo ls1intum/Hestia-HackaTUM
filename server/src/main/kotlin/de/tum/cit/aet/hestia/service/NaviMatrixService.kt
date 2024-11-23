@@ -60,7 +60,7 @@ class NaviMatrixService {
                 )
             },
             travelMode = mode,
-            routingPreference = RoutingPreference.TRAFFIC_UNAWARE,
+            routingPreference = if (mode != RouteTravelMode.WALK && mode != RouteTravelMode.BICYCLE && mode != RouteTravelMode.TRANSIT) RoutingPreference.TRAFFIC_UNAWARE else null,
             departureTime = null,
             arrivalTime = null,
             languageCode = null,
