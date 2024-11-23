@@ -5,6 +5,8 @@ services:
       context: ./server
     hostname: server
     restart: unless-stopped
+    env_file:
+      - server/.env
 
   proxy:
     image: caddy:2.9-alpine
