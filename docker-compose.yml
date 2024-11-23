@@ -1,0 +1,20 @@
+services:
+  server:
+    build:
+      dockerfile: ./src/main/docker/Dockerfile.jvm
+      context: ./server
+    hostname: server
+    restart: unless-stopped
+    env_file:
+      - server/.env
+
+  proxy:
+    image: caddy:2.9-alpine
+    volumes:
+      - ./proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - server
+    restart: unless-stopped
