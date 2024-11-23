@@ -3,6 +3,10 @@ localhost, hestia.aet.cit.tum.de {
         reverse_proxy server:8080
     }
 
+    handle /geo {
+            reverse_proxy zipquery:5000
+        }
+
     handle {
         reverse_proxy client:3000
     }
