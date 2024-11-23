@@ -1,7 +1,6 @@
 package de.tum.cit.aet.hestia.dto
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import de.tum.cit.aet.hestia.dto.airQuality.Location
 import de.tum.cit.aet.hestia.dto.munich.POI
 
 data class Institution(

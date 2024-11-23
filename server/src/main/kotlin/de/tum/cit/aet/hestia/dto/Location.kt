@@ -1,4 +1,4 @@
-package de.tum.cit.aet.hestia.dto.airQuality
+package de.tum.cit.aet.hestia.dto
 
 data class Location(
     val latitude: Double,
