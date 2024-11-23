@@ -24,6 +24,5 @@ services:
       - "443:443"
     depends_on:
       - server
-      - zipquery
       - client
     restart: unless-stopped
