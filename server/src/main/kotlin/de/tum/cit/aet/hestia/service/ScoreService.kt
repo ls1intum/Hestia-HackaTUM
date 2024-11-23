@@ -29,21 +29,22 @@ class ScoreService {
             val interhypZip = interhypData.values.first { it.zipCode == zip }
             val prizePerSqm = interhypZip.prizePerSqm
 
-            val location = googleService.getPlaceDetails(interhypZip.googlePlaceId)
+            val zipLocation = googleService.getPlaceDetails(interhypZip.googlePlaceId)
 
-            val airQuality = googleService.getAirQuality(location)
+            val airQuality = googleService.getAirQuality(zipLocation)
 
-            val nearestKita = poiService.kita().map { getDistance(location, it.location) }.minOrNull() ?: 100.0
+            val nearestKita = poiService.kita().map { getDistance(zipLocation, it.location) }.minOrNull() ?: 100.0
 
-            val nearestSchool = poiService.school(zip).map { getDistance(location, it.location) }.minOrNull() ?: 100.0
+            val nearestSchool =
+                poiService.school(zip).map { getDistance(zipLocation, it.location) }.minOrNull() ?: 100.0
 
-            val nearestKlinik = poiService.klinik().map { getDistance(location, it.location) }.minOrNull() ?: 100.0
+            val nearestKlinik = poiService.klinik().map { getDistance(zipLocation, it.location) }.minOrNull() ?: 100.0
 
             ZipData(
                 zip,
                 prizePerSqm,
                 interhypZip.googlePlaceId,
-                location,
+                zipLocation,
                 0.0,
                 nearestKita,
                 nearestSchool,
