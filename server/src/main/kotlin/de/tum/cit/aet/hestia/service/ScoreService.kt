@@ -24,8 +24,10 @@ class ScoreService {
     private lateinit var poiService: PoiService
 
     fun score(location: Location, travelMode: RouteTravelMode, zips: List<String>): Map<String, Double> {
-        val zipDatas = zips.map { zip ->
-            val interhypData = interhypService.priceIndexBuy("houses")
+        println("Zips: ${zips.size}")
+        val interhypData = interhypService.priceIndexBuy("houses")
+        println("InterhypData: ${interhypData.values.size}")
+        val zipDatas = zips.filter { interhypData.values.any { ih -> ih.zipCode == it } }.map { zip ->
             val interhypZip = interhypData.values.first { it.zipCode == zip }
             val prizePerSqm = interhypZip.prizePerSqm
 
@@ -52,14 +54,22 @@ class ScoreService {
             )
         }
 
-        val distanceMatrix = zipDatas.chunked(50).parallelStream().map { chunk ->
-            googleService.getDistanceMatrix(DistanceMatrixDTO(location, chunk.map { it.placeId }, travelMode))
-        }.reduce { acc, map -> acc + map }.get()
+        println("ZipDatas: ${zipDatas.size}")
 
+        val distanceMatrices = zipDatas.chunked(50).parallelStream().map { chunk ->
+            googleService.getDistanceMatrix(DistanceMatrixDTO(location, chunk.map { it.placeId }, travelMode))
+        }.toList()
+
+        println("DistanceMatrices: ${distanceMatrices.size}")
+        println("DistanceMatrices: ${distanceMatrices.map { it.size }}")
+
+        val distanceMatrix = distanceMatrices.reduce { acc, map -> acc + map }
+
+        val random = Random(1337)
         val scoreMap = zipDatas.map { zipData ->
             val distance = distanceMatrix[zipData.placeId]
 
-            val score = Random(1337).nextDouble(0.0, 100.0)
+            val score = random.nextDouble(0.0, 100.0)
 
             zipData.zip to score
         }.toMap()
