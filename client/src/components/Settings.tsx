@@ -42,7 +42,7 @@ interface SettingsProps {
   setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const COOKIE_KEY = 'user_settings'
+export const COOKIE_KEY = 'user_settings'
 
 export const getSettings = (): SettingsData => {
   const storedSettings = Cookies.get(COOKIE_KEY)

@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { HeatMap } from './components/HeatMap'
 import { FaCog } from 'react-icons/fa'
-import Settings from '@/components/Settings.tsx'
+import Settings, {COOKIE_KEY} from '@/components/Settings.tsx'
+import Cookies from "js-cookie";
 
 function App() {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(!Cookies.get(COOKIE_KEY))
 
   return (
     <main className='relative w-full h-full'>
