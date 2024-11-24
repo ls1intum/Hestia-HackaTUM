@@ -96,34 +96,43 @@ export function HeatMap() {
 
   // Generate mock data and calculate scores for new zip codes only
   useEffect(() => {
-    if (zipCodes?.features) {
-      const newData: Record<string, ZipCodeData> = { ...zipCodeData }
-      let hasNewData = false
+    const fetchData = async () => {
+      if (zipCodes?.features) {
+        const newData: Record<string, ZipCodeData> = { ...zipCodeData };
+        let hasNewData = false;
 
-      zipCodes.features.forEach(feature => {
-        if (feature?.properties && 'plz' in feature.properties) {
-          const zipFeature = feature as ZipCodeFeature
-          const plz = zipFeature.properties.plz
+        for (const feature of zipCodes.features) {
+          if (feature?.properties && 'plz' in feature.properties) {
+            const zipFeature = feature as ZipCodeFeature;
+            const plz = zipFeature.properties.plz;
 
-          // Only generate data if we haven't already done so for this zip code
-          if (!newData[plz]) {
-            const mockData = generateMockData(
-              zipFeature.properties.plz,
-              zipFeature.properties.name
-            )
-            const score = calculateOverallScore(mockData)
-            newData[plz] = { mockData, score }
-            hasNewData = true
+            // Only generate data if we haven't already done so for this zip code
+            if (!newData[plz]) {
+              try {
+                const mockData = await generateMockData(
+                  zipFeature.properties.plz,
+                  zipFeature.properties.name
+                );
+                const score = calculateOverallScore(mockData);
+                newData[plz] = { mockData, score };
+                hasNewData = true;
+              } catch (error) {
+                console.error(`Failed to fetch data for PLZ: ${plz}`, error);
+              }
+            }
           }
         }
-      })
 
-      // Only update state if we actually generated new data
-      if (hasNewData) {
-        setZipCodeData(newData)
+        // Only update state if we actually generated new data
+        if (hasNewData) {
+          setZipCodeData(newData);
+        }
       }
-    }
-  }, [zipCodes, zipCodeData])
+    };
+
+    fetchData(); // Call the async function
+  }, [zipCodes, zipCodeData]);
+
 
   // Handle initial zip codes load and subsequent updates
 

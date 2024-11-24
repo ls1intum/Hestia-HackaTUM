@@ -26,7 +26,7 @@ interface PriceIndexParams {
 
 const QUERY_KEY = ['priceIndex'] as const
 
-async function fetchPriceIndex(
+export async function fetchPriceIndex(
   params?: PriceIndexParams
 ): Promise<PriceIndexResponse> {
   const queryParams = new URLSearchParams()
@@ -35,7 +35,33 @@ async function fetchPriceIndex(
     queryParams.append('estateType', params.estateType)
   }
 
-  const url = `https://hestia.aet.cit.tum.de/api/interhyp/price-index/buy${
+  const url = `/api/interhyp/price-index/buy${
+    queryParams.toString() ? `?${queryParams.toString()}` : ''
+  }`
+
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch price index: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
+export async function fetchPriceIndexRent(
+  params?: PriceIndexParams
+): Promise<PriceIndexResponse> {
+  const queryParams = new URLSearchParams()
+
+  if (params?.estateType) {
+    queryParams.append('estateType', params.estateType)
+  }
+
+  const url = `/api/interhyp/price-index/rent${
     queryParams.toString() ? `?${queryParams.toString()}` : ''
   }`
 
