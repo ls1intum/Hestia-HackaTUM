@@ -6,6 +6,7 @@ import de.tum.cit.aet.hestia.dto.airQuality.AirQualityRequest
 import de.tum.cit.aet.hestia.dto.airQuality.AirQualityResponse
 import de.tum.cit.aet.hestia.dto.route.DistanceMatrixDTO
 import de.tum.cit.aet.hestia.external.GoogleAirQualityClient
+import de.tum.cit.aet.hestia.external.GoogleMapsClient
 import de.tum.cit.aet.hestia.external.GooglePlacesClient
 import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
@@ -29,6 +30,10 @@ class GoogleService {
     private lateinit var placesClient: GooglePlacesClient
 
     @Inject
+    @RestClient
+    private lateinit var mapsClient: GoogleMapsClient
+
+    @Inject
     private lateinit var naviMatrixService: NaviMatrixService
 
     @Inject
@@ -45,15 +50,18 @@ class GoogleService {
 
     @CacheResult(cacheName = "place-details")
     fun getPlaceDetails(placeId: String): Location {
-        val jsonString = placesClient.getPlaceDetails(
+        val jsonString = mapsClient.getPlaceDetails(
             apiKey = apiKey,
-            fields = "location",
+            fields = "geometry",
             placeId = placeId,
         )
         val rootNode = objectMapper.readTree(jsonString)
 
-        val locationNode = rootNode.get("location")
-        val location = objectMapper.treeToValue(locationNode, Location::class.java)
+        val locationNode = rootNode.get("result").get("geometry").get("location")
+        val location = Location(
+            latitude = locationNode.get("lat").asDouble(),
+            longitude = locationNode.get("lng").asDouble()
+        )
 
         return location
     }
