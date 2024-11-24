@@ -6,6 +6,7 @@ import de.tum.cit.aet.hestia.dto.Location
 import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
+import java.io.File
 import kotlin.system.measureTimeMillis
 
 @ApplicationScoped
@@ -20,7 +21,8 @@ class GeoService {
         println(
             "Time: ${
                 measureTimeMillis {
-                    geo = objectMapper.readValue(javaClass.getResource("/geo.json"), GeoJSON::class.java)
+                    // geo = objectMapper.readValue(javaClass.getResource("/geo.json"), GeoJSON::class.java)
+                    geo = objectMapper.readValue(File("/tmp/geo.json"), GeoJSON::class.java)
                 }
             } ms"
         )
@@ -28,6 +30,7 @@ class GeoService {
         return geo
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun calculate(geo: GeoJSON, startLocation: Location, endLocation: Location): List<Any> {
         val filteredData: List<Any>
         println(
