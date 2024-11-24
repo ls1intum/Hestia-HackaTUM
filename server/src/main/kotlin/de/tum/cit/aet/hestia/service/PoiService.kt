@@ -1,9 +1,11 @@
 package de.tum.cit.aet.hestia.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import de.tum.cit.aet.hestia.dto.Location
 import de.tum.cit.aet.hestia.dto.munich.POI
 import de.tum.cit.aet.hestia.dto.parseKitaCsv
 import de.tum.cit.aet.hestia.dto.parseSchoolCsv
-import de.tum.cit.aet.hestia.dto.place.TextSearchRequest
+import de.tum.cit.aet.hestia.external.GoogleMapsClient
 import de.tum.cit.aet.hestia.external.GooglePlacesClient
 import de.tum.cit.aet.hestia.external.KlinikClient
 import de.tum.cit.aet.hestia.external.MunichClient
@@ -32,6 +34,13 @@ class PoiService {
     @RestClient
     private lateinit var googlePlacesClient: GooglePlacesClient
 
+    @Inject
+    @RestClient
+    private lateinit var googleMapsClient: GoogleMapsClient
+
+    @Inject
+    private lateinit var objectMapper: ObjectMapper
+
     @CacheResult(cacheName = "kita")
     fun kita(): List<POI> {
         val kitas = parseKitaCsv(munichClient.getKitas())
@@ -53,18 +62,30 @@ class PoiService {
         schools = schools.filter { it.zip == zip }
 
         return schools.mapNotNull {
-            val places = googlePlacesClient.searchByText(
+            val places = googleMapsClient.searchByText(
                 apiKey = apiKey,
-                fields = "places.location",
-                payload = TextSearchRequest("${it.street} ${it.zip} ${it.city}")
+                query = "${it.street} ${it.zip} ${it.city}"
             )
-            val place = places.places.firstOrNull()
-            place?.location?.let { it1 ->
-                POI(
-                    name = it.name,
-                    location = it1,
-                )
-            }
+
+            // val rootNode = objectMapper.readTree(jsonString)
+            //
+            //        val locationNode = rootNode.get("result").get("geometry").get("location")
+            //        val location = Location(
+            //            latitude = locationNode.get("lat").asDouble(),
+            //            longitude = locationNode.get("lng").asDouble()
+            //        )
+
+            val rootNode = objectMapper.readTree(places)
+            val locationNode = rootNode.get("results").get(0).get("geometry").get("location")
+            val location = Location(
+                latitude = locationNode.get("lat").asDouble(),
+                longitude = locationNode.get("lng").asDouble()
+            )
+
+            POI(
+                name = it.name,
+                location = location,
+            )
         }
     }
 }

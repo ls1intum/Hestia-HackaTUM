@@ -2,7 +2,6 @@ package de.tum.cit.aet.hestia.rest
 
 import de.tum.cit.aet.hestia.dto.ZipCodePrizesResponse
 import de.tum.cit.aet.hestia.service.InterhypService
-import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.ws.rs.GET
@@ -21,7 +20,6 @@ class InterhypResource {
     @GET
     @Path("/price-index/buy")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "zip-code-prices-buy")
     fun priceIndexBuy(@QueryParam("estateType") estateType: String): ZipCodePrizesResponse {
         return interhypService.priceIndexBuy(estateType)
     }
@@ -29,7 +27,6 @@ class InterhypResource {
     @GET
     @Path("/price-index/rent")
     @Produces(MediaType.APPLICATION_JSON)
-    @CacheResult(cacheName = "zip-code-prices-rent")
     fun priceIndexRent(@QueryParam("estateType") estateType: String): ZipCodePrizesResponse {
         return interhypService.priceIndexRent(estateType)
     }
