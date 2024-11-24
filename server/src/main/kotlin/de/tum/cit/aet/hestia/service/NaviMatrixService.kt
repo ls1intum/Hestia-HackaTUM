@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import de.tum.cit.aet.hestia.dto.Location
 import de.tum.cit.aet.hestia.dto.route.*
 import de.tum.cit.aet.hestia.external.GoogleRoutesClient
+import io.quarkus.cache.CacheResult
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import org.eclipse.microprofile.config.inject.ConfigProperty
@@ -24,6 +25,7 @@ class NaviMatrixService {
     private lateinit var objectMapper: ObjectMapper
 
 
+    @CacheResult(cacheName = "navi-matrix-service")
     fun getDistanceMatrix(origin: Location, locations: List<String>, mode: RouteTravelMode): Map<String, Long> {
         // For each target locations, calculate the distance from the origin via the Google Maps API
         // Return a map with the target location as key and the distance as value
@@ -70,8 +72,6 @@ class NaviMatrixService {
             trafficModel = null,
             transitPreferences = null
         )
-
-        println("Input: ${objectMapper.writeValueAsString(input)}")
 
         val routes = routesClient.getPlaceDetails(apiKey, "*", input)
 
