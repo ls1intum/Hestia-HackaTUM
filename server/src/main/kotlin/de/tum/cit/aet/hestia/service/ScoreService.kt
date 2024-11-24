@@ -92,13 +92,43 @@ class ScoreService {
 
         val random = Random(1337)
         val scoreMap: Map<String, Double>
+
+        val sortedDistances = distanceMatrix.values.sorted()
+        val sortedPrices = zipDatas.map { it.prizePerSqm }.sorted()
+        val sortedAirQualities = zipDatas.map { it.airQuality }.sorted()
+        val sortedNearestKitas = zipDatas.map { it.nearestKita }.sorted()
+        val sortedNearestSchools = zipDatas.map { it.nearestSchool }.sorted()
+        val sortedNearestKliniks = zipDatas.map { it.nearestKlinik }.sorted()
+
         println(
             "Score: ${
                 measureTimeMillis {
                     scoreMap = zipDatas.map { zipData ->
-                        val distance = distanceMatrix[zipData.placeId]
+                        val distance = distanceMatrix[zipData.placeId]!!
 
-                        val score = random.nextDouble(0.0, 100.0)
+                        // Calculate a score for each part in [0,100]
+                        // Then have a double with value 100
+                        // Then for each sub-score do `(100 - subscore) * weight` subtract it to the total score
+
+                        //val distanceScore = if (distance < 60 * 20) 100.0 else max(0.0, 100.0 - distance / 60.0 / 2.0)
+
+                        val distanceScore =
+                            100.0 - (sortedDistances.indexOf(distance) / sortedDistances.size.toDouble() * 100.0)
+                        val priceScore =
+                            100.0 - (sortedPrices.indexOf(zipData.prizePerSqm) / sortedPrices.size.toDouble() * 100.0)
+                        val airQualityScore =
+                            100.0 // - (sortedAirQualities.indexOf(zipData.airQuality) / sortedAirQualities.size.toDouble() * 100.0)
+                        val nearestKitaScore =
+                            100.0 - (sortedNearestKitas.indexOf(zipData.nearestKita) / sortedNearestKitas.size.toDouble() * 100.0)
+                        val nearestSchoolScore =
+                            100.0 - (sortedNearestSchools.indexOf(zipData.nearestSchool) / sortedNearestSchools.size.toDouble() * 100.0)
+                        val nearestKlinikScore =
+                            100.0 - (sortedNearestKliniks.indexOf(zipData.nearestKlinik) / sortedNearestKliniks.size.toDouble() * 100.0)
+
+                        val score =
+                            (distanceScore + priceScore + airQualityScore + nearestKitaScore + nearestSchoolScore + nearestKlinikScore) / 6.0
+
+                        // val score = random.nextDouble(0.0, 100.0)
 
                         zipData.zip to score
                     }.toMap()
