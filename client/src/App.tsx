@@ -2,12 +2,12 @@ import {HeatMap} from './components/HeatMap'
 import {useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {Settings2} from "lucide-react";
-import Settings from "@/components/Settings.tsx";
+import Settings, {COOKIE_KEY} from "@/components/Settings.tsx";
+import Cookies from "js-cookie";
 
 
 function App() {
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-
+    const [isSettingsOpen, setIsSettingsOpen] = useState(!Cookies.get(COOKIE_KEY))
 
     return (
         <main className='w-screen h-screen'>
