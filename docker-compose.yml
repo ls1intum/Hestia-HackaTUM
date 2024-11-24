@@ -14,6 +14,13 @@ services:
       context: ./client
     hostname: client
     restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./client/src
+          target: /src/src
+          ignore:
+            - node_modules/
 
   proxy:
     image: caddy:2.9-alpine
@@ -26,3 +33,4 @@ services:
       - server
       - client
     restart: unless-stopped
+
