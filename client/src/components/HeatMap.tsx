@@ -10,6 +10,7 @@ import { debounce } from 'lodash'
 import PropertyData from '@/models/HousingPropertyData.ts'
 import { calculateOverallScore } from '@/utils/calculateScore.ts'
 import { getTileColorForScore } from '@/utils/colorCoding.ts'
+import {fetchPriceIndex, fetchPriceIndexRent} from "@/models/api/usePriceIndex.ts";
 
 interface ZipCodeFeature extends Feature {
   properties: {
@@ -101,6 +102,9 @@ export function HeatMap() {
         const newData: Record<string, ZipCodeData> = { ...zipCodeData };
         let hasNewData = false;
 
+        const rentValues = (await fetchPriceIndexRent({ estateType: 'houses' })).values;
+        const buyValues = (await fetchPriceIndex({ estateType: 'houses' })).values;
+
         for (const feature of zipCodes.features) {
           if (feature?.properties && 'plz' in feature.properties) {
             const zipFeature = feature as ZipCodeFeature;
@@ -111,9 +115,12 @@ export function HeatMap() {
               try {
                 const mockData = await generateMockData(
                   zipFeature.properties.plz,
-                  zipFeature.properties.name
+                  zipFeature.properties.name,
+                  rentValues,
+                  buyValues
                 );
                 const score = calculateOverallScore(mockData);
+                console.log(score);
                 newData[plz] = { mockData, score };
                 hasNewData = true;
               } catch (error) {
